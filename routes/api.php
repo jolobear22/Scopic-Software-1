@@ -8,6 +8,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PlayerController;
+use App\Http\Models\Player;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +35,5 @@ Route::group(['prefix'=>'player'], function () {
 });
 
 Route::post('team/process', []);
+
+Route::post("skills",[Player::class,'skills']);
