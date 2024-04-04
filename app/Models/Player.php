@@ -30,7 +30,7 @@ class Player extends Model
     ];
 
     protected $casts = [
-        'position' => PlayerPosition::class
+        'position' => 'PlayerPosition'::class
     ];
 
     protected $with = ['skills'];
