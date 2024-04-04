@@ -35,5 +35,3 @@ Route::group(['prefix'=>'player'], function () {
 });
 
 Route::post('team/process', []);
-
-Route::post("skills",['Player'::class,'skills']);
