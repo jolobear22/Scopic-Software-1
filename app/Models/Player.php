@@ -71,9 +71,9 @@ class Player extends Model
 
 
 
-    protected $with = ['skills'];
+    protected $with = ['skill'];
 
-    public function skills(): HasMany
+    public function skill(): HasMany
     {
         return $this->hasMany(PlayerSkill::class);
     }
