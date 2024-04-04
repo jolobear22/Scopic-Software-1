@@ -41,7 +41,7 @@ class PlayerController extends Controller
                 'position' => $request->position,
             ]);
 
-                        // Ensure $request->skills is not null and is an array
+            // Ensure $request->skills is not null and is an array
             if (!is_array($request->playerSkills)) {
                 return response()->json(['error' => 'Skills must be provided as an array'], 400);
             }
@@ -55,20 +55,13 @@ class PlayerController extends Controller
                     'skill' => $skillData['skill'],
                 ], [
                     'value' => $skillData['value'],
-                // ], [
-                //     'value' => $skillData[$player->id],
+
                 ]);
-                // $player->skill()->attach($skill->id, ['player_id' => $player->id]);
                 
             }
 
             // Fetch the player with their skills
             $playerWithSkills = Player::with('skill')->find($player->id);
-
-            // return response()->json($playerWithSkills, 201);
-
-            // Return the response using the resource class
-            //  return new PlayerWithSkillsResource($playerWithSkills);
 
                 // Transform the data structure
             $responseData = [
