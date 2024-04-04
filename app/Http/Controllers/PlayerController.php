@@ -25,39 +25,35 @@ class PlayerController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the request data
-        $request->validate([
-            'name' => 'required|string',
-            'position' => 'required|string|in:defender,midfielder,forward',
-            'playerSkills' => 'required|array|min:1',
-            'playerSkills.*.skill' => 'required|string|in:defense,attack,speed,strength,stamina',
-            'playerSkills.*.value' => 'required|integer|min:0|max:100'
-        ]);
+            // Validate the request data
+            $request->validate([
+                'name' => 'required|string',
+                'position' => 'required|string|in:defender,midfielder,forward',
+                'playerSkills' => 'required|array|min:1',
+                'playerSkills.*.skill' => 'required|string|in:defense,attack,speed,strength,stamina',
+                'playerSkills.*.value' => 'required|integer|min:0|max:100',
+            ]);
 
-        // Create the player
-        $player = Player::create([
-            'name' => $request->name,
-            'position' => $request->position
-        ]);
+            // Create the player
+            $player = Player::create([
+                'name' => $request->name,
+                'position' => $request->position,
+            ]);
 
-        // Attach skills to the player
-        foreach ($request->skills as $skillData) {
-            // Ensure each skill data is an array
-            if (!is_array($skillData)) {
-                return response()->json(['error' => 'Each skill must be provided as an array'], 400);
+            // Attach skills to the player
+            foreach ($request->skill as $skillData) {
+                $skill = PlayerSkill::firstOrCreate([
+                    'skill' => $skillData['skill'],
+                ], [
+                    'value' => $skillData['value'],
+                ]);
+                $player->skills()->attach($skill->id);
             }
 
-            $skill = new PlayerSkill([
-                'skill' => $skillData['skill'],
-                'value' => $skillData['value']
-            ]);
-            $player->skills()->save($skill);
-        }
+            // Fetch the player with their skills
+            $playerWithSkills = Player::with('skill')->find($player->id);
 
-        // Fetch the player with their skills
-        $playerWithSkills = Player::with('skill')->find($player->id);
-
-        return response()->json($playerWithSkills);
+            return response()->json($playerWithSkills, 201);
 
 
         //$users = json_decode($request->all());
