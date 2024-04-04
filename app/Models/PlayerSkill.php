@@ -21,7 +21,8 @@ class PlayerSkill extends Model
 
     protected $fillable = [
         'skill',
-        'value'
+        'value',
+        'player_id'
     ];
 
     protected $casts = [
