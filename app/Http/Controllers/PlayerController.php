@@ -10,13 +10,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Player;
 use App\Models\PlayerSkill;
-use App\Http\Resources\PlayerWithSkillsResource;
+
 
 class PlayerController extends Controller
 {
     public function index()
     {
-        return response("Failed", 500);
+        // Fetch the list of players
+        $players = Player::all();
+
+        // Return the list of players as JSON response
+        return response()->json($players);
+
+        //return response("Failed", 500);
     }
 
     public function show()
@@ -175,3 +181,6 @@ class PlayerController extends Controller
         // return response("Failed", 500);
     }
 }
+
+
+
