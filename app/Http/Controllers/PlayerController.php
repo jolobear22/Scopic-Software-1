@@ -47,15 +47,18 @@ class PlayerController extends Controller
 
 
             // Attach skills to the player
-            foreach ($request->playerSkills as $skillData) {
-                $skill = PlayerSkill::firstOrCreate([
+            foreach ($request->playerSkills as $skillData) { 
+
+                $skill = PlayerSkill::updateOrCreate([
+                    'player_id' => $player->id,
                     'skill' => $skillData['skill'],
                 ], [
                     'value' => $skillData['value'],
-                ], [
-                    'value' => $skillData['player_id'],
+                // ], [
+                //     'value' => $skillData[$player->id],
                 ]);
-                $player->skill()->attach($skill->id, ['player_id' => $player->id]);
+                // $player->skill()->attach($skill->id, ['player_id' => $player->id]);
+                
             }
 
             // Fetch the player with their skills
