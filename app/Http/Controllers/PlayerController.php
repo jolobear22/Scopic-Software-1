@@ -153,8 +153,25 @@ class PlayerController extends Controller
         // return response("Failed", 500);
     }
 
-    public function destroy()
+    public function destroy(Request $request, $playerId)
     {
-        return response("Failed", 500);
+            // Find the player by ID
+        $player = Player::find($playerId);
+
+        // If player not found, return error response
+        if (!$player) {
+            return response()->json(['error' => 'Player not found'], 404);
+        }
+
+
+        // Fetch the player with their skills
+        $playerWithSkills = Player::with('skill')->find($player->id);
+
+        // Delete the player
+        $playerWithSkills->delete();
+
+        // Return success response
+        return response()->json(['message' => 'Player and associated skills deleted successfully'], 200);
+        // return response("Failed", 500);
     }
 }
