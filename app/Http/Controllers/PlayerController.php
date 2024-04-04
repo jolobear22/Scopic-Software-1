@@ -40,14 +40,20 @@ class PlayerController extends Controller
                 'position' => $request->position,
             ]);
 
+                        // Ensure $request->skills is not null and is an array
+            if (!is_array($request->playerSkills)) {
+                return response()->json(['error' => 'Skills must be provided as an array'], 400);
+            }
+
+
             // Attach skills to the player
-            foreach ($request->skill as $skillData) {
+            foreach ($request->playerSkills as $skillData) {
                 $skill = PlayerSkill::firstOrCreate([
                     'skill' => $skillData['skill'],
                 ], [
                     'value' => $skillData['value'],
                 ]);
-                $player->skills()->attach($skill->id);
+                $player->skills()->attach($skill->id, ['player_id' => $player->id]);
             }
 
             // Fetch the player with their skills

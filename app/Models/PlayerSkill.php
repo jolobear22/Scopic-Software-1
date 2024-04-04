@@ -25,7 +25,8 @@ class PlayerSkill extends Model
     ];
 
     protected $casts = [
-        'skill' => PlayerSkill::class
+        // 'skill' => PlayerSkill::class
+        'skill' => 'string'
     ];
 
     public function player(): BelongsTo
