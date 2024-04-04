@@ -25,7 +25,7 @@ class PlayerSkill extends Model
     ];
 
     protected $casts = [
-        'skill' => '\App\Enums\PlayerSkill'::class
+        'skill' => PlayerSkill::class
     ];
 
     public function player(): BelongsTo
