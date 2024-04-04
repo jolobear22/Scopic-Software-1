@@ -84,9 +84,73 @@ class PlayerController extends Controller
 
     }
 
-    public function update()
+    public function update(Request $request, $playerId)
     {
-        return response("Failed", 500);
+            // Validate the request data
+            $request->validate([
+                'name' => 'required|string',
+                'position' => 'required|string|in:defender,midfielder,forward',
+                'playerSkills' => 'required|array|min:1',
+                'playerSkills.*.skill' => 'required|string|in:defense,attack,speed,strength,stamina',
+                'playerSkills.*.value' => 'required|integer|min:0|max:100',
+            ]);
+
+            // Find the player by ID
+            $player = Player::find($playerId);
+
+            // If player not found, return error response
+            if (!$player) {
+                return response()->json(['error' => 'Player not found'], 404);
+            }
+
+            // Update the player's information
+            $player->update([
+                'name' => $request->name,
+                'position' => $request->position,
+            ]);
+
+           // Ensure $request->skills is not null and is an array
+           if (!is_array($request->playerSkills)) {
+            return response()->json(['error' => 'Skills must be provided as an array'], 400);
+        }
+
+
+        // Attach skills to the player
+        foreach ($request->playerSkills as $skillData) { 
+
+            $skill = PlayerSkill::updateOrCreate([
+                'player_id' => $player->id,
+                'skill' => $skillData['skill'],
+            ], [
+                'value' => $skillData['value'],
+
+            ]);
+            
+        }
+
+        // Fetch the player with their skills
+        $playerWithSkills = Player::with('skill')->find($player->id);
+
+            // Transform the data structure
+        $responseData = [
+            'id' => $playerWithSkills->id,
+            'name' => $playerWithSkills->name,
+            'position' => $playerWithSkills->position,
+            'playerSkills' => $playerWithSkills->skill->map(function ($skill) {
+                return [
+                    'id' => $skill->id,
+                    'skill' => $skill->skill,
+                    'value' => $skill->value,
+                    'playerId' => $skill->player_id,
+                ];
+            }),
+        ];
+
+        // Return the response
+        return response()->json($responseData, 201);
+
+
+        // return response("Failed", 500);
     }
 
     public function destroy()
