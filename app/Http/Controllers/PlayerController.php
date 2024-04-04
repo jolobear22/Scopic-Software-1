@@ -10,6 +10,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Player;
 use App\Models\PlayerSkill;
+use App\Http\Resources\PlayerWithSkillsResource;
 
 class PlayerController extends Controller
 {
@@ -64,17 +65,30 @@ class PlayerController extends Controller
             // Fetch the player with their skills
             $playerWithSkills = Player::with('skill')->find($player->id);
 
-            return response()->json($playerWithSkills, 201);
+            // return response()->json($playerWithSkills, 201);
+
+            // Return the response using the resource class
+            //  return new PlayerWithSkillsResource($playerWithSkills);
+
+                // Transform the data structure
+            $responseData = [
+                'id' => $playerWithSkills->id,
+                'name' => $playerWithSkills->name,
+                'position' => $playerWithSkills->position,
+                'playerSkills' => $playerWithSkills->skill->map(function ($skill) {
+                    return [
+                        'id' => $skill->id,
+                        'skill' => $skill->skill,
+                        'value' => $skill->value,
+                        'playerId' => $skill->player_id,
+                    ];
+                }),
+            ];
+
+            // Return the response
+            return response()->json($responseData, 201);
 
 
-        //$users = json_decode($request->all());
-        // $player = Player::create([
-        //     'name' => $request['name'],
-        //     'position' => $request['position']
-        //     ]);
-
-        // return response()->json($player);
-        // return response("", 200);
     }
 
     public function update()
