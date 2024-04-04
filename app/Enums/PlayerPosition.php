@@ -8,3 +8,5 @@ class PlayerPosition
     const midfielder = 'midfielder';
     const forward = 'forward';
 }
+
+?>

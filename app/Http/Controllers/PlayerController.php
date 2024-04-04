@@ -24,7 +24,7 @@ class PlayerController extends Controller
 
     public function store(Request $request)
     {
-        //return response("Success", 200);
+        
 
         //$users = json_decode($request->all());
         $player = Player::create([
@@ -33,6 +33,7 @@ class PlayerController extends Controller
             ]);
 
         return response()->json($player);
+        return response("", 200);
     }
 
     public function update()
