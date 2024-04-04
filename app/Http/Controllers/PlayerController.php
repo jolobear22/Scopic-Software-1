@@ -53,7 +53,7 @@ class PlayerController extends Controller
                 ], [
                     'value' => $skillData['value'],
                 ]);
-                $player->skills()->attach($skill->id, ['player_id' => $player->id]);
+                $player->skill()->attach($skill->id, ['player_id' => $player->id]);
             }
 
             // Fetch the player with their skills
