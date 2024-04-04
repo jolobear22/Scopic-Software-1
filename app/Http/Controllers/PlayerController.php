@@ -52,6 +52,8 @@ class PlayerController extends Controller
                     'skill' => $skillData['skill'],
                 ], [
                     'value' => $skillData['value'],
+                ], [
+                    'value' => $skillData['player_id'],
                 ]);
                 $player->skill()->attach($skill->id, ['player_id' => $player->id]);
             }
