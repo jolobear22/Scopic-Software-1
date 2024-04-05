@@ -121,6 +121,13 @@ return [
 
     'key' => env('APP_KEY'),
 
+
+    'api_tokens' => [
+        'player' => 'SkFabTZibXE1aE14ckpQUUxHc2dnQ2RzdlFRTTM2NFE2cGI4d3RQNjZmdEFITmdBQkE=',
+    ],
+    
+
+    
     'cipher' => 'AES-256-CBC',
 
     /*
