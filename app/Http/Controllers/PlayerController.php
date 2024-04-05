@@ -189,6 +189,59 @@ class PlayerController extends Controller
         return response()->json(['message' => 'Player and associated skills deleted successfully'], 200);
         // return response("Failed", 500);
     }
+
+
+    public function processTeam(Request $request)
+{
+    // Validate the request parameters
+    $request->validate([
+        '*.position' => 'required|string|in:defender,midfielder,forward',
+        '*.mainSkill' => 'required|string|in:defense,attack,speed,strength,stamina',
+        '*.numberOfPlayers' => 'required|integer|min:1',
+    ]);
+
+    // Initialize an array to store the selected players
+    $selectedPlayers = [];
+
+    // Iterate over each requirement
+    foreach ($request->json() as $requirement) {
+        $position = $requirement['position'];
+        $mainSkill = $requirement['mainSkill'];
+        $numberOfPlayers = $requirement['numberOfPlayers'];
+
+        // Query the database to retrieve players based on the position and skill
+        $players = Player::where('position', $position)->get();
+
+        // If no players found for the given position, return an error
+        if ($players->isEmpty()) {
+            return response()->json(['error' => "Insufficient number of players for position: $position"], 400);
+        }
+
+        // Sort players by the main skill in descending order
+        $players = $players->sortByDesc("skills.$mainSkill");
+
+        // Select the required number of players
+        $selectedPlayers[$position] = $players->take($numberOfPlayers);
+    }
+
+    // Format the selected players for the response
+    $formattedPlayers = [];
+
+    foreach ($selectedPlayers as $position => $players) {
+        foreach ($players as $player) {
+            $formattedPlayers[] = [
+                'id' => $player->id,
+                'name' => $player->name,
+                'position' => $player->position,
+                'playerSkills' => $player->skill, // Adjust this according to your database structure
+            ];
+        }
+    }
+
+    // Return the selected players as the response
+    return response()->json($formattedPlayers);
+}
+
 }
 
 
