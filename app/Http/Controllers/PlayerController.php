@@ -161,6 +161,13 @@ class PlayerController extends Controller
 
     public function destroy(Request $request, $playerId)
     {
+
+        // Validate API token
+        $player = $this->validateApiToken($request);
+        if (!$player) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
             // Find the player by ID
         $player = Player::find($playerId);
 
@@ -179,6 +186,19 @@ class PlayerController extends Controller
         // Return success response
         return response()->json(['message' => 'Player and associated skills deleted successfully'], 200);
         // return response("Failed", 500);
+    }
+
+    private function validateApiToken($request)
+    {
+        // Extract API token from request headers
+        $apiToken = $request->header('Authorization');
+        if (!$apiToken) {
+            return null;
+        }
+
+        // Validate API token and fetch user
+        $user = Player::where('api_token', $apiToken)->first();
+        return $user;
     }
 }
 
